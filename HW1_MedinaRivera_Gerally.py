@@ -6,17 +6,20 @@ ASTR 178100
 Prof. A. Maller
 """
 
-def time_drop(height:float, gravity:float =9.8):
+import sys
+import argparse
+
+def time_drop(height:float, gravity:float):
     """
     Function used to calculate the time it takes an object to reach the ground from a certain height when subjected to a
     certain gravity
 
     Args:
-        height (float): height, in meters, from which the object falls
-        gravity (float): gravity, in meters per seconds squared, to which the object is subjected
+        height (float): height from which the object falls
+        gravity (float): gravity to which the object is subjected
 
     Returns:
-        time (float): time, in seconds, it takes for the ball to reach the ground
+        time (float): time it takes for the ball to reach the ground
     """
 
     time = ((2*height)/gravity)**(0.5)
@@ -24,50 +27,38 @@ def time_drop(height:float, gravity:float =9.8):
     return time
 
 if __name__ == '__main__':
-    print('What units is your height in?')
-    print('[0] meters')
-    print('[1] kilometers')
-    print('[2] feet')
-    print('[3] inches')
-    user_height_meters = None
 
-    while not user_height_meters:
-        user_units_opt = input('Enter the number of your choice: ')
-        user_height = float(input('From what height does the ball drop? '))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-height', type=float, help='Height of ball above ground.')
+    parser.add_argument('-u', type=str, default='m', help='Units of the height. Default is meters ("m"), '
+                                                                        'but can be kilometers ("km"), feet ("ft"), or '
+                                                                        'inches ("in").')
+    parser.add_argument('-gravity', type=float, default=9.8, help='Value of gravity the ball is subjected '
+                                                                                'to in meters per seconds squared. '
+                                                                                'Default is Earths gravity (9.8).')
+    args = parser.parse_args()
 
-        if user_units_opt == '0':
-            user_height_meters = user_height
-            units = 'meters'
 
-        elif user_units_opt == '1':
-            user_height_meters = user_height*1000
-            units = 'kilometers'
+    if args.u == 'm':
+        user_height_meters = args.height
+        units = 'meters'
 
-        elif user_units_opt == '2':
-            user_height_meters = user_height/3.28
-            units = 'feet'
+    elif args.u == 'km':
+        user_height_meters = args.height*1000
+        units = 'kilometers'
 
-        elif user_units_opt == '3':
-            user_height_meters = user_height/39.37
-            units = 'inches'
+    elif args.u == 'ft':
+        user_height_meters = args.height/3.28
+        units = 'feet'
 
-        else:
-            print('Error: Invalid number or not a number for unit options. Please try again!')
+    elif args.u == 'in':
+        user_height_meters = args.height/39.37
+        units = 'inches'
 
-    result = None
+    else:
+        sys.exit('The units entered are invalid. Use "-h" or "-help" to view which units can be used.')
 
-    while not result:
-        user_grav_opt = input('Is the ball dropping on Earth? [y/n] ')
 
-        if user_grav_opt == 'y':
-            result = time_drop(user_height_meters)
+    result = time_drop(user_height_meters, args.gravity)
 
-        elif user_grav_opt == 'n':
-            user_gravity = float(input('What is the value of the gravity, in meters per seconds squared? '))
-            result = time_drop(user_height_meters,gravity=user_gravity)
-
-        else:
-            print('Error: Invalid input. Only enter "y" or "n". Please try again!')
-
-    print('')
-    print(f'The time it takes a ball dropped from {user_height} {units} to reach the ground is {result:.2f} seconds.')
+    print(f'The time it takes a ball dropped from {args.height} {units} to reach the ground is {result:.2f} seconds.')
