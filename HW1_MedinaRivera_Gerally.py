@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     # argparse to enter values from terminal
     parser = argparse.ArgumentParser()
-    parser.add_argument('-height', type=float, help='Height of ball above ground.')
+    parser.add_argument('height', type=float, help='Height of ball above ground.')
     parser.add_argument('-u', type=str, default='m', help='Units of the height. Default is meters ("m"), '
                                                                         'but can be kilometers ("km"), feet ("ft"), or '
                                                                         'inches ("in").')
