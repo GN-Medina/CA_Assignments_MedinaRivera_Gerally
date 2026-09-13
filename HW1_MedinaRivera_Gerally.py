@@ -36,12 +36,12 @@ if __name__ == '__main__':
     # argparse to enter values from terminal
     parser = argparse.ArgumentParser()
     parser.add_argument('height', type=float, help='Height of ball above ground.')
-    parser.add_argument('-u', type=str, default='m', help='Units of the height. Default is meters ("m"), '
-                                                                        'but can be kilometers ("km"), feet ("ft"), or '
-                                                                        'inches ("in").')
-    parser.add_argument('-gravity', type=float, default=9.8, help='Value of gravity the ball is subjected '
-                                                                                'to in meters per seconds squared. '
-                                                                                'Default is Earths gravity (9.8).')
+    parser.add_argument('-u', type=str, default='m', help='Units of the height. Default is meters, '
+                                                                        'but can be kilometers, miles, feet, or '
+                                                                        'inches.')
+    parser.add_argument('-gravity', type=float, default=9.81, help="Value of gravity the ball is subjected "
+                                                                                "to in meters per seconds squared. "
+                                                                                "Default is Earth's gravity (9.81 m/s²).")
     args = parser.parse_args()
 
     # converting any value to meters
