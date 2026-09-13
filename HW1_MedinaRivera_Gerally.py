@@ -44,32 +44,36 @@ if __name__ == '__main__':
                                                                                 'Default is Earths gravity (9.8).')
     args = parser.parse_args()
 
-    # in case no height is given
-    if args.height == None:
-        sys.exit('No value for height entered. Use "-h" or "-help" to view how to provide a value.')
-
     # converting any value to meters
-    if args.u == 'm':
-        user_height_meters = args.height
-        units = 'meters'
+    if args.u[0].lower() == 'm':
+        if len(args.u) == 1 or args.u[1] == 'e':
+            user_height_meters = args.height
+            units = 'meters'
 
-    elif args.u == 'km':
+        elif args.u[1].lower() == 'i':
+            user_height_meters = args.height*1609.34
+            units = 'miles'
+
+        else:  # in case invalid units were given
+            sys.exit('The units entered are invalid. Use "-h" or "-help" to view which units are supported.')
+
+    elif args.u[0].lower() == 'k':
         user_height_meters = args.height*1000
         units = 'kilometers'
 
-    elif args.u == 'ft':
+    elif args.u[0].lower() == 'f':
         user_height_meters = args.height/3.28
         units = 'feet'
 
-    elif args.u == 'in':
+    elif args.u[0].lower() == 'i':
         user_height_meters = args.height/39.37
         units = 'inches'
 
     else:    # in case invalid units were given
-        sys.exit('The units entered are invalid. Use "-h" or "-help" to view which units can be used.')
+        sys.exit('The units entered are invalid. Use "-h" or "-help" to view which units are supported.')
 
     result = time_drop(user_height_meters, args.gravity)
 
-    print(f'The time it takes a ball dropped from {args.height} {units} to reach the ground is {result:.2f} seconds.')
+    print(f'The time it takes a ball dropped from {args.height:.2f} {units} to reach the ground is {result:.2f} seconds.')
 
 # End of Code
