@@ -14,9 +14,6 @@ import matplotlib.pyplot as plt
 
 # Functions
 
-def f(t):
-    return np.e**(-t**2)
-
 def simps_rule(f, a, b, slices):
     """
     Function that uses Simpson's rule to integrate a given function
@@ -44,13 +41,33 @@ def simps_rule(f, a, b, slices):
 
     return result
 
+def f(t):
+    return np.e**(-t**2)
+
 def E(x,N):
     return simps_rule(f,0,x,N)
 
 # Main Code
 
 if __name__ == '__main__':
-    x = np.arange(0,3.1,0.1)
-    y = E(x, 10)
+
+    # argparse to enter values from terminal
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--x-llimit', type=float, default=0, help='Lower limit of the x interval.')
+    parser.add_argument('--x-ulimit', type=float, default=3, help='Upper limit of the x interval.')
+    parser.add_argument('--x-step', type=float, default=0.1, help='Step between x values.')
+    parser.add_argument('--slices', type=float, default=10, help='Number of slices used for the integration')
+
+    args = parser.parse_args()
+
+    x = np.arange(args.x_llimit, args.x_ulimit+args.x_step, args.x_step)
+    y = E(x, args.slices)
+
+    # Plot
+    plt.plot(x, y)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title(r'$E(x) = \int_{0}^{x} e^{t^{2}} dt$')
+    plt.show()
 
 # End of Code
