@@ -25,7 +25,7 @@ def simps_rule(f, a, b, slices):
         slices (int): number of evenly spaced slices used for integration
 
     Returns:
-        result (float): final result of the integral
+        result of the integral
     """
 
     h = (b-a)/(slices)
@@ -37,9 +37,7 @@ def simps_rule(f, a, b, slices):
         else:
             s += 2*f(a + k*h)
 
-    result = (h/3)*s
-
-    return result
+    return (h/3)*s
 
 def f(t):
     return np.e**(-t**2)
@@ -71,12 +69,12 @@ if __name__ == '__main__':
     plt.ylim(bottom=0,top=None)
 
     plt.xlabel('x', fontsize=12, labelpad=8, fontstyle='italic')
-    plt.ylabel('y', fontsize=12, labelpad=8,fontstyle='italic')
-    plt.title(r'$E(x) = \int_{0}^{x} e^{t^{2}} dt$', fontsize=14, pad=15, weight='bold')
+    plt.ylabel('y', fontsize=12, labelpad=8, fontstyle='italic')
+    plt.title(r'$E(x) = \int_{0}^{x} \, e^{t^{2}} dt$', fontsize=14, pad=15, weight='bold')
 
     plt.grid(linestyle=':', alpha=0.7)
 
-    if args.save_plot == True:
+    if args.save_plot:
         plt.savefig('function_plot.png', dpi=300, bbox_inches='tight')
 
     plt.show()
