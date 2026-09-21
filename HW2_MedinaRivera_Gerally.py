@@ -1,7 +1,7 @@
 """
 Gerally Medina Rivera
 
-Homework 1 for Computational Astrophysics
+Homework 2 for Computational Astrophysics
 ASTR 178100
 Prof. A. Maller
 """
@@ -57,6 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('--x-ulimit', type=float, default=3, help='Upper limit of the x interval.')
     parser.add_argument('--x-step', type=float, default=0.1, help='Step between x values.')
     parser.add_argument('--slices', type=float, default=10, help='Number of slices used for the integration')
+    parser.add_argument('--save-plot', action='store_true', help='If used, saves plot to folder.')
 
     args = parser.parse_args()
 
@@ -64,10 +65,20 @@ if __name__ == '__main__':
     y = E(x, args.slices)
 
     # Plot
-    plt.plot(x, y)
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.title(r'$E(x) = \int_{0}^{x} e^{t^{2}} dt$')
+    plt.plot(x, y, color='orangered', linewidth=1.3)
+
+    plt.xlim(args.x_llimit, args.x_ulimit)
+    plt.ylim(bottom=0,top=None)
+
+    plt.xlabel('x', fontsize=12, labelpad=8, fontstyle='italic')
+    plt.ylabel('y', fontsize=12, labelpad=8,fontstyle='italic')
+    plt.title(r'$E(x) = \int_{0}^{x} e^{t^{2}} dt$', fontsize=14, pad=15, weight='bold')
+
+    plt.grid(linestyle=':', alpha=0.7)
+
+    if args.save_plot == True:
+        plt.savefig('function_plot.png', dpi=300, bbox_inches='tight')
+
     plt.show()
 
 # End of Code
