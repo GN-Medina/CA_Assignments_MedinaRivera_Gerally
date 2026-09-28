@@ -27,6 +27,19 @@ def f_der(r):
     return -2*((G*M_EARTH)/r**3) - 2*((G*M_MOON)/(R - r)**3) - OMEGA**2
 
 def newtons_method(function, derivative, guess, tolerance=1e-10):
+    """
+    Function that uses Newton's method to find one solution of the given function
+
+    Args:
+        function (function): equation that will be solved
+        derivative (function): analytical derivative of the equation that will be solved
+        guess (float): initial guess of the solution
+        tolerance (float): accuracy of the answer
+
+    Returns:
+        solution to the equation
+    """
+
     err = 100
 
     while err > tolerance:
@@ -37,6 +50,19 @@ def newtons_method(function, derivative, guess, tolerance=1e-10):
     return guess
 
 def secant_method(function, guess_1, guess_2, tolerance=1e-10):
+    """
+    Function that uses secant method to find one solution of the given function
+
+    Args:
+        function (function): equation that will be solved
+        guess_1 (float): first starting guess
+        guess_2 (float): second starting guess
+        tolerance (float): accuracy of the answer
+
+    Returns:
+        solution to the equation
+    """
+
     err = 100
 
     while err > tolerance:
