@@ -14,8 +14,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Functions
-G = 6.67e-11        # m^3 kg^-1 s^-2
-M_EARTH = 5.97e24   # kg
+G = 6.674e-11        # m^3 kg^-1 s^-2
+M_EARTH = 5.972e24   # kg
 M_MOON = 7.348e22   # kg
 R = 3.844e8         # m
 OMEGA = 2.662e-6    # s^-1
@@ -79,7 +79,8 @@ def secant_method(function, guess_1, guess_2, tolerance=1e-10):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('method', type=str, default='Newton', help="Method used to numerically solve the equation. It can be Newton's or secant method.")
+    parser.add_argument('method', type=str, default='Newton', help="Method used to numerically solve the equation. It can be Newton's method or secant method.")
+    parser.add_argument('--plot-first', action='store_true', help='If used, it shows a plot a the function and asks the user to input their guess for the solution.')
     parser.add_argument('--r-Nguess', type=float, default=3.5e8, help="Initial distance guess for Newton's method. Default is 3.5e8 meters.")
     parser.add_argument('--r-sguess-1', type=float, default=3e8, help='First starting value for secant method. Default is 3e8 meters.')
     parser.add_argument('--r-sguess-2', type=float, default=3.5e8, help='Second starting value for secant method. Default is 3.5e8 meters.')
@@ -87,14 +88,45 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.method[0].lower() == 'n':
-        dist = newtons_method(f, f_der, args.r_Nguess, args.tol)
+    if args.plot_first:
+        x = np.arange(6.3e6, R, 0.03e8)
+        y = f(x)
 
-    elif args.method[0].lower() == 's':
-        dist = secant_method(f, args.r_sguess_1, args.r_sguess_2, args.tol)
+        plt.plot(x,y)
+        plt.axhline(y=0, color='black', linestyle='--')
+        plt.ylim(-0.05, 0.05)
+
+        plt.xlabel('x [m]', fontsize=12, labelpad=8, fontstyle='italic')
+        plt.ylabel('y', fontsize=12, labelpad=8, fontstyle='italic')
+        plt.title(r'$f(x) = \frac{GM}{r^2} - \frac{Gm}{(R - r)^2} - \omega^2 r = 0$', fontsize=14, pad=15, weight='bold')
+        plt.show()
+
+        if args.method[0].lower() == 'n':
+            guess = float(input('What is your guess for the distance of the L\u2081 Lagrange point? '))
+            dist = newtons_method(f, f_der, guess, args.tol)
+
+        elif args.method[0].lower() == 's':
+            guess_1 = float(input('What is your first guess for the distance of the L\u2081 Lagrange point? '))
+            guess_2 = float(input('What is your second guess for the distance of the L\u2081 Lagrange point? '))
+            dist = secant_method(f, guess_1, args.r_sguess_2, args.tol)
+
+        else:
+            sys.exit('The method entered is not valid. Use "-h" or "-help" to view which methods are supported.')
+
 
     else:
-        sys.exit('The method entered is not valid. Use "-h" or "-help" to view which methods are supported.')
 
-    print(f'The distance from Earth to the L\u2081 Lagrange point is {dist:.4e} meters.')
+        if args.method[0].lower() == 'n':
+            dist = newtons_method(f, f_der, args.r_Nguess, args.tol)
+
+        elif args.method[0].lower() == 's':
+            dist = secant_method(f, args.r_sguess_1, args.r_sguess_2, args.tol)
+
+        else:
+            sys.exit('The method entered is not valid. Use "-h" or "-help" to view which methods are supported.')
+
+    print('')
+    print(f'The distance from Earth to the L\u2081 Lagrange point is {dist:.3e} meters.')
+    print('')
+
 # End of Code
