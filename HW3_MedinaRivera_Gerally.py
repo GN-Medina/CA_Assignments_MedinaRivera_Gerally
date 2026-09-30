@@ -102,13 +102,13 @@ if __name__ == '__main__':
         plt.show()
 
         if args.method[0].lower() == 'n':
-            guess = float(input('What is your guess for the distance of the L\u2081 Lagrange point? '))
-            dist = newtons_method(f, f_der, guess, args.tol)
+            user_guess = float(input('What is your guess for the distance of the L\u2081 Lagrange point? '))
+            dist = newtons_method(f, f_der, user_guess, args.tol)
 
         elif args.method[0].lower() == 's':
-            guess_1 = float(input('What is your first guess for the distance of the L\u2081 Lagrange point? '))
-            guess_2 = float(input('What is your second guess for the distance of the L\u2081 Lagrange point? '))
-            dist = secant_method(f, guess_1, args.r_sguess_2, args.tol)
+            user_guess_1 = float(input('What is your first guess for the distance of the L\u2081 Lagrange point? '))
+            user_guess_2 = float(input('What is your second guess for the distance of the L\u2081 Lagrange point? '))
+            dist = secant_method(f, user_guess_1, user_guess_2, args.tol)
 
         else:
             sys.exit('The method entered is not valid. Use "-h" or "-help" to view which methods are supported.')
