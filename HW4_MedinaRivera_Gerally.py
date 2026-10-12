@@ -55,7 +55,7 @@ def inv_transform(c_arr, kmax, N):
             if k == 0:
                 weight = 1
             else:
-                weight = 2     # Doubles the negative frequencies
+                weight = 2
             y_arr[n] += (weight/N) * c_arr[k] * np.exp(2j * np.pi * k * n / N)
 
     return y_arr
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     fluxes_slice = fluxes[mask]
 
     # Linear Interpolation
-    dt = np.median(np.diff(times_slice))    # np.diff to not take into account big chunks of no data
+    dt = np.median(np.diff(times_slice))    # np.diff to not take into account spaces of no data
     t_slice_uniform = np.arange(times_slice[0], times_slice[-1], dt)
     f_slice_uniform = np.interp(t_slice_uniform, times_slice, fluxes_slice)
 
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     print(f"According to the power spectrum, the period of this eclipsing binary is {period:.3f} days. The value in the "
           f"TESS EB catalog is 3.318 days.")
 
-    # Calculating the inverse transform with different coefficients
+    # Calculating and plotting the inverse transform with different coefficients
 
     def invtrans_plot(c_arr, kmax, n, N):
 
@@ -148,8 +148,6 @@ if __name__ == '__main__':
 
         axs[n].plot(t_slice_uniform, y.real, color='royalblue', lw=1)
         axs[n].set_title(f'inverse transform, k ≤ {kmax}')
-
-    # Plotting the light curve with different inverse transforms
 
     fig, axs = plt.subplots(nrows=5, ncols=1, figsize=(7, 8), sharex=True, sharey=True,
                         constrained_layout=True)
