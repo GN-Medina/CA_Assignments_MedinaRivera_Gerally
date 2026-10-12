@@ -65,18 +65,26 @@ def inv_transform(c_arr, kmax, N):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--fn', type=str, default='tic0040244907.fits', help="Filename of the FITS file to be used. "
-                                                                                           "This program assumes it is in the same directory as the code.")
-    parser.add_argument('--mask-min', type=float, default=2769, help="Minimum value used to truncate the time interval. "
-                                                                                   "Default is the Julian Date 2769.")
-    parser.add_argument('--mask-max', type=float, default=2828, help="Maximum value used to truncate the time interval. "
-                                                                                   "Default is the Julian Date 2828")
-    parser.add_argument('--k-max', type=float, default=200, help="Maximum value of the k interval used to create the inverse transform. "
-                                                                               "It should be where the power spectrum flattens. Default is 200.")
-    parser.add_argument('--ps-max', type=float, default=300,help="Maximum value of the k interval used for the x limit of the Power Spectrum plot. "
-                                                                               "High k values should flatten to zero, so constricting the x limits helps visualize the spectrum better. "
-                                                                               "Default is 300.")
-    parser.add_argument('--save-plots', action='store_true', help="If used, saves all the plots to the code's directory.")
+    parser.add_argument('--fn', type=str, default='tic0040244907.fits',
+                        help="Filename of the FITS file to be used. This code assumes it is in the same directory as "
+                             "the script.")
+    parser.add_argument('--mask-min', type=float, default=2769,
+                        help="Minimum value used to truncate the time interval. Default is the Julian Date 2769. "
+                             "Other sugested values are 2417, 3310, or 3505.")
+    parser.add_argument('--mask-max', type=float, default=2828,
+                        help="Maximum value used to truncate the time interval. Default is the Julian Date 2828. "
+                             "Other sugested values are 2448, 3370, or 3560.")
+    parser.add_argument('--ps-max', type=float, default=300,
+                        help="Maximum value of the k interval used for the x limit of the Power Spectrum plot. "
+                             "High k values should flatten to zero, so constricting the x limits helps visualize the "
+                             "spectrum better. Default is 300.")
+    parser.add_argument('--k-max', type=float, default=200,
+                        help="Maximum value of the k interval used to create the inverse transform. "
+                             "It should be where the power spectrum flattens. Default is 200.")
+    parser.add_argument('--save-plots', action='store_true',
+                        help="If used, saves all the plots to the code's directory.")
+    parser.add_argument('--lin-interpolation', action='store_true',
+                        help="If used, linear interpolation is performed on the data set before the Fourier analysis.")
 
     args = parser.parse_args()
 
@@ -91,6 +99,14 @@ if __name__ == '__main__':
     times_slice = times[mask]
     fluxes_slice = fluxes[mask]
     ferrs_slice = ferrs[mask]
+
+    if args.lin_interpolation:
+        dt = np.median(np.diff(times_slice))
+        t_slice_uniform = np.arange(times_slice[0], times_slice[-1], dt)
+        f_slice_uniform = np.interp(t_slice_uniform, times_slice, fluxes_slice)
+
+        times_slice = t_slice_uniform
+        fluxes_slice = f_slice_uniform
 
     plt.scatter(times_slice, fluxes_slice, s=3, color='royalblue')
     plt.xlabel('Truncated Barycentric Julian Date')
@@ -130,16 +146,5 @@ if __name__ == '__main__':
     if args.save_plots:
         plt.savefig(f'LightCurve_wInverseTransform_{args.fn}.png', dpi=300, bbox_inches='tight')
     plt.show()
-
-'''    
-
-    #2417.5, 2447.5
-    #2768, 2828
-    #3310, 3370
-    #3505, 3560
-    
-Linear interpolation?
- 
-'''
 
 # End of Code
