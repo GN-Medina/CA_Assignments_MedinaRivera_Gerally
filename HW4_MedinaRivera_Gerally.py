@@ -78,7 +78,7 @@ if __name__ == '__main__':
                         help="Maximum value of the k interval used for the x limit of the Power Spectrum plot. "
                              "High k values should flatten to zero, so constricting the x limits helps visualize the "
                              "spectrum better. Default is 300.")
-    parser.add_argument('--k-max', type=float, default=200,
+    parser.add_argument('--k-max', type=int, default=200,
                         help="Maximum value of the k interval used to create the inverse transform. "
                              "It should be where the power spectrum flattens. Default is 200.")
     parser.add_argument('--save-plots', action='store_true',
