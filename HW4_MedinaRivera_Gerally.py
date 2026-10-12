@@ -70,10 +70,10 @@ if __name__ == '__main__':
                              "the script.")
     parser.add_argument('--mask-min', type=float, default=2769,
                         help="Minimum value used to truncate the time interval. Default is the Julian Date 2769. "
-                             "Other sugested values are 2417, 3310, or 3505.")
+                             "Other suggested values are 2417, 3310, or 3505.")
     parser.add_argument('--mask-max', type=float, default=2828,
                         help="Maximum value used to truncate the time interval. Default is the Julian Date 2828. "
-                             "Other sugested values are 2448, 3370, or 3560.")
+                             "Other suggested values are 2448, 3370, or 3560.")
     parser.add_argument('--ps-max', type=float, default=300,
                         help="Maximum value of the k interval used for the x limit of the Power Spectrum plot. "
                              "High k values should flatten to zero, so constricting the x limits helps visualize the "
@@ -92,13 +92,11 @@ if __name__ == '__main__':
     hdul = fits.open(filename)
     times = hdul[1].data['times']     # shape = 54646
     fluxes = hdul[1].data['fluxes']   # shape = 54646
-    ferrs = hdul[1].data['ferrs']     # shape = 54646
 
     mask = (times >= args.mask_min) & (times <= args.mask_max)
 
     times_slice = times[mask]
     fluxes_slice = fluxes[mask]
-    ferrs_slice = ferrs[mask]
 
     if args.lin_interpolation:
         dt = np.median(np.diff(times_slice))
