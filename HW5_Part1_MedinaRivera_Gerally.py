@@ -30,14 +30,14 @@ def step(l, r):
 
     return -l * np.log(1 - r)
 
-def photon_path(l, width_slab, initial_theta=0, rng=np.random.default_rng()):
+def photon_path(l, width_slab, initial_theta, rng=np.random.default_rng()):
     """
     Function that calculates the path of a photon through a slab of given thickness and a constant electron density.
 
     Args:
         l (float): Mean free path value of the area the photon is traversing.
-        width_slab (float): Thickness of the slab in, should be in the same units as the mean free path.
-        initial_theta (float): The angle in radians the photon enters the slab with, the default is 0 rad.
+        width_slab (float): Thickness of the slab, should be in the same units as the mean free path.
+        initial_theta (float): The angle in radians the photon enters the slab with.
         rng (Generator): Random number generator used to sample step length and scattering direction.
 
     Returns:
@@ -52,7 +52,7 @@ def photon_path(l, width_slab, initial_theta=0, rng=np.random.default_rng()):
     z_list = [0,z]
     cos_theta_list = [np.cos(initial_theta)]
 
-    while 0 < z < width_slab:
+    while 0 <= z <= width_slab:
         cos_theta = 2*rng.random() - 1        # cosine
         new_z = z + step(l, rng.random()) * cos_theta
 
@@ -69,20 +69,35 @@ def photon_path(l, width_slab, initial_theta=0, rng=np.random.default_rng()):
 
     return z_list, cos_theta_list, outcome
 
+def correct_radians(text):
+    value = float(text)
+    if value < 0 or value >= np.pi/2:
+        raise argparse.ArgumentTypeError("Initial angle must be between 0 and π/2.")
+    return value
+
+def positive_float(text):
+    value = float(text)
+    if value <= 0:
+        raise argparse.ArgumentTypeError("Value must be positive.")
+    return value
+
 # Main Code
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--number-density', type=float, default=1e20,
+    parser.add_argument('--number-density', type=positive_float, default=1e20,
                         help="Constant number density of electrons in the slab, in cm⁻³. Default is 10²⁰ cm⁻³.")
-    parser.add_argument('--thickness', type=float, default=1000,
+    parser.add_argument('--thickness', type=positive_float, default=1000,
                         help="Width of the slab the photon is traversing, in meters. Default is 1000 m.")
+    parser.add_argument('--i-radian', type=correct_radians, default=0,
+                        help="Initial angle, in radians, the photon enters the slab with. The value must be between 0"
+                             " and π/2. Default is 0 rad.")
     parser.add_argument('--min-scattering-number', type=int, default=20,
                         help="Minimum number of scatterings the photon goes through, does not count entrance and exit "
                              "points. Default is 20.")
     parser.add_argument('--outcome', choices=['transmitted', 'reflected'], default=None,
-                        help="Outcome of the exit of the photon. Choices are 'transmitted' or 'reflected'.")
+                        help="Outcome of the exit of the photon. If omitted, any outcome is accepted.")
     parser.add_argument('--save-gif', nargs='?', const='photon_path', default=None,
                         help="If used, a gif of the photon's path will be saved to the directory the code is in. "
                              "Default filename is 'photon_path', but can be changed if a filename is given with the"
@@ -94,7 +109,7 @@ if __name__ == '__main__':
     l = (1/(args.number_density*SIGMA_T))/100  # ~ 150 m
 
     while True:
-        z_list, cos_theta_list, p_exit = photon_path(l, args.thickness)
+        z_list, cos_theta_list, p_exit = photon_path(l, args.thickness, args.i_radian)
 
         n_depth = len(z_list)
         long_enough = (args.min_scattering_number <= n_depth-2)   # checks scattering number against given minimum
@@ -114,7 +129,7 @@ if __name__ == '__main__':
         z_list[-1] = args.thickness
 
     fig = plt.figure(figsize=(5,5))
-    ax = plt.axes(ylim=(-50, args.thickness+50), xlim=(0, n_depth-1))
+    ax = plt.axes(ylim=(-50, args.thickness+50), xlim=(0, n_depth-0.5))
 
     ax.axhline(0, color='black', linewidth=2)
     ax.axhline(args.thickness, color='black', linewidth=2)
